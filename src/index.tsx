@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 import { Route, BrowserRouter } from "react-router-dom";
 import { Auth } from "./features/auth/Auth";
+import { Task } from "./features/task/Task";
 
 ReactDOM.render(
   <Provider store={store}>
@@ -14,6 +15,7 @@ ReactDOM.render(
       <div>
         <Route exact path="/" component={Auth} />
         <Route exact path="/tasks" component={App} />
+        <Route exact path="/about" component={Task} />
       </div>
     </BrowserRouter>
   </Provider>,
