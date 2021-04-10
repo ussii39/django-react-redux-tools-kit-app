@@ -1,7 +1,12 @@
 import React, { FC, useEffect } from "react";
 import { AppDispatch } from "../../app/store";
 import { useSelector, useDispatch } from "react-redux";
-import { selectLoginUser, selectIsLoginView } from "../auth/authSlice";
+import {
+  selectLoginUser,
+  selectIsLoginView,
+  fetchAsyncGetMyProf,
+  fetchAsynclogout,
+} from "../auth/authSlice";
 
 import { useHistory } from "react-router";
 
@@ -11,9 +16,9 @@ export const Task: FC = (): any => {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect((): void => {
-    if (test === null) {
-      history.push("/");
-    }
+    const data = localStorage.getItem("token");
+    dispatch(fetchAsyncGetMyProf(data));
+    console.log(loginuser);
   }, []);
   const logout = (): void => {
     history.push("/");
@@ -21,7 +26,9 @@ export const Task: FC = (): any => {
 
   return (
     <div>
-      <button onClick={() => logout()}>ログアウト</button>
+      <button onClick={() => dispatch(fetchAsynclogout(loginuser))}>
+        ログアウト
+      </button>
     </div>
   );
 };

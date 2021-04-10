@@ -10,13 +10,14 @@ const initialState: AUTH_STATE = {
     name: "",
     token: "",
     percent: 0,
-    AnsweredIds: JSON,
+    AnsweredIds: "[[null]]",
     point: 0,
   },
 };
 
 export const fetchAsyncLogin = createAsyncThunk(
-  "auth/login", //action名
+  "auth/login",
+  //action名
   async (auth: CRED) => {
     const res = await axios.post<USER>(
       `${process.env.REACT_APP_API_URL}/api/login`,
@@ -49,37 +50,43 @@ export const fetchAsyncRegister = createAsyncThunk(
   }
 );
 
-// export const fetchAsyncGetMyProf = createAsyncThunk(
-//   "auth/loginuser",
-//   async () => {
-//     const res = await axios.get<LOGIN_USER>(
-//       `${process.env.REACT_APP_API_URL}/api/loginuser/`,
-//       {
-//         headers: {
-//           Authorization: `JWT ${localStorage.localJWT}`,
-//         },
-//       }
-//     );
-//     return res.data;
-//   }
-// );
+export const fetchAsyncGetMyProf = createAsyncThunk(
+  "auth/loginuser",
+  async (token: unknown) => {
+    const loginusertoken = { token: token };
+    const res = await axios.post<LOGIN_USER>(
+      `${process.env.REACT_APP_API_URL}/api/users`,
+      loginusertoken,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(res.data);
+    return res.data;
+  }
+);
 
-// export const fetchAsyncCreateProf = createAsyncThunk(
-//   "auth/createProfile",
-//   async () => {
-//     const res = await axios.post<PROFILE>(
-//       `${process.env.REACT_APP_API_URL}/api/profile/`,
-//       { img: null },
-//       {
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `JWT ${localStorage.localJWT}`,
-//         },
-//       }
-//     );
-//     return res.data;
-//   }
-// );
+export const fetchAsynclogout = createAsyncThunk(
+  "auth/logout",
+  async (loginuser: any) => {
+    const logoutData = loginuser.map((login: any) => login.token).join("");
+    console.log(logoutData);
+    const logoutUsertoken = { token: logoutData };
+    const res = await axios.post<LOGIN_USER>(
+      `${process.env.REACT_APP_API_URL}/api/logout`,
+      logoutUsertoken,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(res.data);
+    return res.data;
+  }
+);
 
 // export const fetchAsyncGetProfs = createAsyncThunk(
 //   "auth/getProfiles",
@@ -125,18 +132,6 @@ export const fetchAsyncRegister = createAsyncThunk(
 //       state.isLoginView = !state.isLoginView;
 //     },
 //   },
-
-//     builder.addCase(
-//       fetchAsyncGetMyProf.fulfilled,
-//       //pending
-//       //rejected
-//       (state, action: PayloadAction<LOGIN_USER>) => {
-//         return {
-//           ...state,
-//           loginUser: action.payload,
-//         };
-//       }
-//     );
 //     builder.addCase(
 //       fetchAsyncGetProfs.fulfilled,
 //       (state, action: PayloadAction<PROFILE[]>) => {
@@ -172,6 +167,7 @@ export const authSlice = createSlice({
     builder.addCase(
       fetchAsyncLogin.fulfilled,
       (state, action: PayloadAction<any>) => {
+        console.log(action.payload);
         localStorage.setItem("token", action.payload.token);
         action.payload.token && (window.location.href = "/tasks");
         return {
@@ -183,6 +179,7 @@ export const authSlice = createSlice({
     builder.addCase(
       fetchAsyncRegister.fulfilled,
       (state, action: PayloadAction<any>) => {
+        console.log(action.payload);
         localStorage.setItem("token", action.payload.token);
         action.payload.token && (window.location.href = "/tasks");
         return {
@@ -192,14 +189,35 @@ export const authSlice = createSlice({
       }
     );
     builder.addCase(
-      fetchAsyncRegister.rejected,
-      (state, action: PayloadAction<any>) => {
-        action.payload.token && (window.location.href = "/");
+      fetchAsyncGetMyProf.fulfilled,
+      //pending
+      //rejected
+      (state, action: PayloadAction<LOGIN_USER>) => {
         return {
           ...state,
+          loginUser: action.payload,
         };
       }
     );
+    builder.addCase(
+      fetchAsynclogout.fulfilled,
+      (state, action: PayloadAction<LOGIN_USER>) => {
+        window.location.href = "/";
+        return {
+          ...state,
+          loginUser: action.payload,
+        };
+      }
+    );
+    // builder.addCase(
+    //   fetchAsyncRegister.rejected,
+    //   (state, action: PayloadAction<any>) => {
+    //     action.payload.token && (window.location.href = "/");
+    //     return {
+    //       ...state,
+    //     };
+    //   }
+    // );
   },
 });
 export const { toggleMode } = authSlice.actions; //通常のreducerだけ

@@ -3,7 +3,7 @@ export interface LOGIN_USER {
   name: string;
   token: string;
   percent: number;
-  AnsweredIds: JSON;
+  AnsweredIds?: string | JSON;
   point: number;
 }
 // export interface FILE extends Blob {
