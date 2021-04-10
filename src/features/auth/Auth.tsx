@@ -8,10 +8,10 @@ import { AppDispatch } from "../../app/store";
 import {
   toggleMode,
   fetchAsyncLogin,
-  fetchAsyncRegister,
-  fetchAsyncCreateProf,
   selectIsLoginView,
+  fetchAsyncRegister,
 } from "./authSlice";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) => ({
   button: {
@@ -23,24 +23,63 @@ export const Auth: FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
   const isLoginView = useSelector(selectIsLoginView);
-  const [credential, setCredential] = useState({ username: "", password: "" });
+  const [email, Setemail] = useState("");
+  const [password, Setpassword] = useState("");
+  const [name, Setname] = useState("");
+  const [Emailmessage, SetEmailmessage] = useState("");
+  const [Passmessage, SetPassmessage] = useState("");
+
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/user`).then((res) => {
+      console.log(res.data);
+      Setemail("");
+    });
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const name = e.target.name;
-    setCredential({ ...credential, [name]: value });
+    console.log(value);
+    if (value === "") {
+      SetEmailmessage("");
+    }
+    if (email.match(/""/)) {
+      SetEmailmessage("※正しい形式でメールアドレスを入力してください");
+    }
+    Setemail(value);
   };
-  console.log(credential);
+  const handleInputChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    Setpassword(value);
+  };
+  const handleInputChange3 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    Setname(value);
+  };
 
-  const login = async () => {
+  console.log(email);
+  const login = () => {
+    if (!email) {
+      SetEmailmessage("※メールアドレスを入力してください");
+      return;
+    }
+    const regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!regex.test(email)) {
+      SetEmailmessage("※正しい形式でメールアドレスを入力してください");
+      return;
+    }
+    if (password.length < 6) {
+      SetPassmessage("※パスワードは６文字以上で入力してください");
+      return;
+    }
     if (isLoginView) {
-      await dispatch(fetchAsyncLogin(credential));
+      const data = { email: email, password: password };
+      dispatch(fetchAsyncLogin(data));
     } else {
-      const result = await dispatch(fetchAsyncRegister(credential));
-      if (fetchAsyncRegister.fulfilled.match(result)) {
-        await dispatch(fetchAsyncLogin(credential));
-        await dispatch(fetchAsyncCreateProf());
-      }
+      const data = { email: email, password: password, name: name };
+      const result = dispatch(fetchAsyncRegister(data));
+      // if (fetchAsyncRegister.fulfilled.match(result)) {
+      //   await dispatch(fetchAsyncLogin(data));
+      // }
     }
   };
 
@@ -48,27 +87,44 @@ export const Auth: FC = () => {
     <div className={styles.auth__root}>
       <h1>{isLoginView ? "ログイン" : "新規会員登録"}</h1>
       <br />
+      {Emailmessage}
       <TextField
         InputLabelProps={{
           shrink: true,
         }}
-        label="Username"
-        type="text"
-        name="username"
-        value={credential.username}
+        label="メールアドレス"
+        type="email"
+        name="email"
+        value={email}
         onChange={handleInputChange}
       />
       <br />
+      {Passmessage}
       <TextField
         InputLabelProps={{
           shrink: true,
         }}
-        label="Password"
+        label="パスワード"
         type="password"
         name="password"
-        value={credential.password}
-        onChange={handleInputChange}
+        onChange={handleInputChange2}
       />
+      <br />
+      <div>
+        {!isLoginView ? (
+          <TextField
+            InputLabelProps={{
+              shrink: true,
+            }}
+            label="名前"
+            type="text"
+            name="name"
+            onChange={handleInputChange3}
+          />
+        ) : (
+          <div></div>
+        )}
+      </div>
       <Button
         variant="contained"
         color="primary"
