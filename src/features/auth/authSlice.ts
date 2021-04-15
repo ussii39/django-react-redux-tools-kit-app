@@ -12,14 +12,16 @@ const initialState: AUTH_STATE = {
     percent: 0,
     AnsweredIds: "[[null]]",
     point: 0,
+    LoginDate: "[null]",
   },
+  message: "",
 };
 
 export const fetchAsyncLogin = createAsyncThunk(
   "auth/login",
   //action名
   async (auth: CRED) => {
-    const res = await axios.post<USER>(
+    const res = await axios.post<LOGIN_USER>(
       `${process.env.REACT_APP_API_URL}/api/login`,
       auth,
       {
@@ -71,8 +73,11 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
 export const fetchAsynclogout = createAsyncThunk(
   "auth/logout",
   async (loginuser: any) => {
-    const logoutData = loginuser.map((login: any) => login.token).join("");
-    console.log(logoutData);
+    console.log(loginuser);
+    const logoutData = loginuser
+      .map((login: LOGIN_USER) => login?.token)
+      .join("");
+    console.log(logoutData, "loginuser");
     const logoutUsertoken = { token: logoutData };
     const res = await axios.post<LOGIN_USER>(
       `${process.env.REACT_APP_API_URL}/api/logout`,
@@ -168,20 +173,37 @@ export const authSlice = createSlice({
       fetchAsyncLogin.fulfilled,
       (state, action: PayloadAction<any>) => {
         console.log(action.payload);
-        localStorage.setItem("token", action.payload.token);
-        action.payload.token && (window.location.href = "/tasks");
-        return {
-          ...state,
-          loginUser: action.payload,
-        };
+        if (action.payload.token) {
+          localStorage.setItem("token", action.payload.token);
+          action.payload.token && (window.location.href = "/loading");
+          return {
+            ...state,
+            loginUser: action.payload,
+          };
+        } else if (!action.payload.token) {
+          return {
+            ...state,
+            message: action.payload,
+          };
+        }
       }
     );
+    // builder.addCase(
+    //   fetchAsyncLogin.fulfilled,
+    //   (state, action: PayloadAction<any>) => {
+    //     console.log(action.payload);
+    //     return {
+    //       ...state,
+    //       message: action.payload,
+    //     };
+    //   }
+    // );
     builder.addCase(
       fetchAsyncRegister.fulfilled,
-      (state, action: PayloadAction<any>) => {
+      (state, action: PayloadAction<LOGIN_USER>) => {
         console.log(action.payload);
         localStorage.setItem("token", action.payload.token);
-        action.payload.token && (window.location.href = "/tasks");
+        action.payload.token && (window.location.href = "/loading");
         return {
           ...state,
           loginUser: action.payload,
@@ -203,6 +225,7 @@ export const authSlice = createSlice({
       fetchAsynclogout.fulfilled,
       (state, action: PayloadAction<LOGIN_USER>) => {
         window.location.href = "/";
+        localStorage.removeItem("token");
         return {
           ...state,
           loginUser: action.payload,
@@ -225,6 +248,8 @@ export const { toggleMode } = authSlice.actions; //通常のreducerだけ
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
 // export const selectProfiles = (state: RootState) => state.auth.profiles;
+export const selectResponseErorrMessage = (state: RootState) =>
+  state.auth.message;
 
 //stpre.tsを参照している
 

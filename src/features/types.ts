@@ -5,7 +5,9 @@ export interface LOGIN_USER {
   percent: number;
   AnsweredIds?: string | JSON;
   point: number;
+  LoginDate?: string | JSON;
 }
+
 // export interface FILE extends Blob {
 //   readonly lastModified: number;
 //   readonly name: string;
@@ -35,6 +37,7 @@ export interface USER {
 export interface AUTH_STATE {
   isLoginView: boolean;
   loginUser: LOGIN_USER;
+  message: string;
 }
 // /*taskSlice.ts*/
 // export interface READ_TASK {

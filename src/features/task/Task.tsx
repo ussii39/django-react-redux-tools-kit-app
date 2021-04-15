@@ -9,6 +9,7 @@ import {
 } from "../auth/authSlice";
 
 import { useHistory } from "react-router";
+import { LOGIN_USER } from "../types";
 
 export const Task: FC = (): any => {
   const history = useHistory();

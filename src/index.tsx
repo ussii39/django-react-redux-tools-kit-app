@@ -8,6 +8,8 @@ import * as serviceWorker from "./serviceWorker";
 import { Route, BrowserRouter } from "react-router-dom";
 import { Auth } from "./features/auth/Auth";
 import { Task } from "./features/task/Task";
+import Login from "./features/Login/Login";
+import Loading from "./features/Loading/Loading";
 
 ReactDOM.render(
   <Provider store={store}>
@@ -16,6 +18,8 @@ ReactDOM.render(
         <Route exact path="/" component={Auth} />
         <Route exact path="/tasks" component={App} />
         <Route exact path="/about" component={Task} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/loading" component={Loading} />
       </div>
     </BrowserRouter>
   </Provider>,

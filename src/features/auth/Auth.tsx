@@ -10,6 +10,7 @@ import {
   fetchAsyncLogin,
   selectIsLoginView,
   fetchAsyncRegister,
+  selectResponseErorrMessage,
 } from "./authSlice";
 import axios from "axios";
 
@@ -17,12 +18,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   button: {
     margin: "24px",
   },
+  message: {
+    color: "#ee5b5b",
+  },
 }));
 
 export const Auth: FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
   const isLoginView = useSelector(selectIsLoginView);
+  const error = useSelector(selectResponseErorrMessage);
   const [email, Setemail] = useState("");
   const [password, Setpassword] = useState("");
   const [name, Setname] = useState("");
@@ -76,7 +81,7 @@ export const Auth: FC = () => {
       dispatch(fetchAsyncLogin(data));
     } else {
       const data = { email: email, password: password, name: name };
-      const result = dispatch(fetchAsyncRegister(data));
+      dispatch(fetchAsyncRegister(data));
       // if (fetchAsyncRegister.fulfilled.match(result)) {
       //   await dispatch(fetchAsyncLogin(data));
       // }
@@ -87,6 +92,7 @@ export const Auth: FC = () => {
     <div className={styles.auth__root}>
       <h1>{isLoginView ? "ログイン" : "新規会員登録"}</h1>
       <br />
+      <div className={classes.message}>{error}</div>
       {Emailmessage}
       <TextField
         InputLabelProps={{

@@ -1,0 +1,167 @@
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#content {
+  z-index: 2;
+  width: 35%;
+  height: 40%;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.modal-warning {
+  font-size: 5px;
+  margin-bottom: 80px;
+}
+.modal-item {
+  padding: 20px;
+  font-weight: bold;
+  color: rgb(51, 46, 46);
+}
+.modal-button {
+  width: 120px;
+  margin-top: 140px;
+  text-align: center;
+  font-size: 7px;
+}
+.login-text {
+  font-family: sans-serif;
+  font-weight: bold;
+  color: rgb(94, 87, 87);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+.date-area {
+  background-color: #ffff;
+  display: flex;
+  width: 1240px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  animation: sample_anime03 3s;
+}
+.stampe-area {
+  width: 80px;
+  position: relative;
+  height: 80px;
+  border: 1px solid #cacaca;
+  border-radius: 12px;
+}
+.point {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 15px;
+  opacity: 0.7;
+  top: 15px;
+}
+.taihenStamp {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  animation: sample_anime02 2s;
+  animation-fill-mode: backwards;
+  /* アニメーション開始時のスタイルがアニメーション開始前にも適用されます。 */
+  animation-delay: 2s;
+}
+.taihenStampcompleted {
+  width: 80px;
+  height: 80px;
+  z-index: 2;
+  position: absolute;
+  top: 1px;
+}
+.date1 {
+  display: flex;
+  border-radius: 12px;
+  padding: 30px;
+  background-color: #ffff;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #cacaca;
+}
+
+@keyframes sample_anime02 {
+  0% {
+    opacity: 0;
+    width: 1000px;
+    height: 1000px;
+    transform: rotate(-180deg) scale(2.5);
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+    /* visibility: visible; */
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+}
+@keyframes sample_anime03 {
+  0% {
+    /* visibility: visible; */
+    opacity: 0;
+    transform: translateY(1220px);
+  }
+  100% {
+    /* visibility: visible; */
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .modal-button {
+    width: 120px;
+    margin-top: 50px;
+  }
+  .modal-warning {
+    font-size: 5px;
+    margin-bottom: 20px;
+  }
+  .date-area {
+    padding: 20px;
+    display: flex;
+    width: 260px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .stampe-area {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #cacaca;
+    border-radius: 12px;
+  }
+  .taihenStamp {
+    width: 50px;
+    height: 50px;
+  }
+  .taihenStampcompleted {
+    width: 50px;
+    height: 50px;
+  }
+  .date1 {
+    background-color: #ffff;
+    width: 20px;
+    height: 20px;
+    padding: 15px;
+  }
+}
