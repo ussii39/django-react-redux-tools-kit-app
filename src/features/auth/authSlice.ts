@@ -5,15 +5,17 @@ import { USER, AUTH_STATE, CRED, LOGIN_USER } from "../types";
 
 const initialState: AUTH_STATE = {
   isLoginView: true,
-  loginUser: {
-    id: 0,
-    name: "",
-    token: "",
-    percent: 0,
-    AnsweredIds: "[[null]]",
-    point: 0,
-    LoginDate: "[null]",
-  },
+  loginUser: [
+    {
+      id: 0,
+      name: "",
+      token: "",
+      percent: 0,
+      AnsweredIds: "[[null]]",
+      point: 0,
+      LoginDate: "[null]",
+    },
+  ],
   message: "",
 };
 
@@ -73,11 +75,11 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
 export const fetchAsynclogout = createAsyncThunk(
   "auth/logout",
   async (loginuser: any) => {
-    console.log(loginuser);
-    const logoutData = loginuser
-      .map((login: LOGIN_USER) => login?.token)
+    console.log(loginuser, "Aaaa");
+    const logoutuser = loginuser.flat();
+    const logoutData = logoutuser
+      .map((login: LOGIN_USER) => login.token)
       .join("");
-    console.log(logoutData, "loginuser");
     const logoutUsertoken = { token: logoutData };
     const res = await axios.post<LOGIN_USER>(
       `${process.env.REACT_APP_API_URL}/api/logout`,
@@ -206,7 +208,7 @@ export const authSlice = createSlice({
         action.payload.token && (window.location.href = "/loading");
         return {
           ...state,
-          loginUser: action.payload,
+          loginUser: [action.payload],
         };
       }
     );
@@ -217,7 +219,7 @@ export const authSlice = createSlice({
       (state, action: PayloadAction<LOGIN_USER>) => {
         return {
           ...state,
-          loginUser: action.payload,
+          loginUser: [action.payload],
         };
       }
     );
@@ -228,7 +230,7 @@ export const authSlice = createSlice({
         localStorage.removeItem("token");
         return {
           ...state,
-          loginUser: action.payload,
+          loginUser: [action.payload],
         };
       }
     );

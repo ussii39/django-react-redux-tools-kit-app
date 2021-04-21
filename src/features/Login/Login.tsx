@@ -14,6 +14,7 @@ import axios from "axios";
 import img from "../../app/img/taihen.png";
 import { useHistory } from "react-router";
 import { LOGIN_USER } from "../types";
+import Modal from "../Modal/Modal";
 
 const Login: FC = () => {
   const [count, setCount] = useState(0);
@@ -76,25 +77,9 @@ const Login: FC = () => {
   };
   const leave = () => {
     if (count > 6) {
-      history.push("/tasks");
+      history.push("/selectlang");
     }
   };
-
-  function Modal() {
-    return (
-      <div id="overlay" onClick={() => setIsOpen(false)}>
-        <div id="content">
-          <div className="modal-warning">
-            ※モーダルを閉じるとメインページ遷移します
-          </div>
-          <div className="modal-item">ポイントを獲得しました!</div>
-          <div className="modal-button" onClick={() => setIsOpen(false)}>
-            閉じる
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div onClick={leave}>
@@ -105,6 +90,25 @@ const Login: FC = () => {
           <div className="date-area">
             {UserLoginStatus.length > 0 ? (
               UserLoginStatus.length > 1 ? (
+                <div className="stampe-area">
+                  <div className="point">50P</div>
+                  <img
+                    className="taihenStampcompleted"
+                    src={img}
+                    alt="taihen"
+                  />
+                </div>
+              ) : (
+                <div className="stampe-area">
+                  <div className="point">50P</div>
+                  <img className="taihenStamp" src={img} alt="taihen" />
+                </div>
+              )
+            ) : (
+              <div className="date1">50P</div>
+            )}
+            {UserLoginStatus.length > 1 ? (
+              UserLoginStatus.length > 2 ? (
                 <div className="stampe-area">
                   <div className="point">50P</div>
                   <img
@@ -143,6 +147,25 @@ const Login: FC = () => {
             )}
             {UserLoginStatus.length > 3 ? (
               UserLoginStatus.length > 4 ? (
+                <div className="stampe-area">
+                  <div className="point">50P</div>
+                  <img
+                    className="taihenStampcompleted"
+                    src={img}
+                    alt="taihen"
+                  />
+                </div>
+              ) : (
+                <div className="stampe-area">
+                  <div className="point">50P</div>
+                  <img className="taihenStamp" src={img} alt="taihen" />
+                </div>
+              )
+            ) : (
+              <div className="date1">50P</div>
+            )}
+            {UserLoginStatus.length > 4 ? (
+              UserLoginStatus.length > 5 ? (
                 <div className="stampe-area">
                   <div className="point">50P</div>
                   <img
@@ -426,46 +449,8 @@ const Login: FC = () => {
             ) : (
               <div className="date1">50P</div>
             )}
-            {UserLoginStatus.length > 18 ? (
-              UserLoginStatus.length > 19 ? (
-                <div className="stampe-area">
-                  <div className="point">50P</div>
-                  <img
-                    className="taihenStampcompleted"
-                    src={img}
-                    alt="taihen"
-                  />
-                </div>
-              ) : (
-                <div className="stampe-area">
-                  <div className="point">50P</div>
-                  <img className="taihenStamp" src={img} alt="taihen" />
-                </div>
-              )
-            ) : (
-              <div className="date1">50P</div>
-            )}
             {UserLoginStatus.length > 19 ? (
               UserLoginStatus.length > 20 ? (
-                <div className="stampe-area">
-                  <div className="point">50P</div>
-                  <img
-                    className="taihenStampcompleted"
-                    src={img}
-                    alt="taihen"
-                  />
-                </div>
-              ) : (
-                <div className="stampe-area">
-                  <div className="point">50P</div>
-                  <img className="taihenStamp" src={img} alt="taihen" />
-                </div>
-              )
-            ) : (
-              <div className="date1">50P</div>
-            )}
-            {UserLoginStatus.length > 20 ? (
-              UserLoginStatus.length > 21 ? (
                 <div className="stampe-area">
                   <div className="point">50P</div>
                   <img

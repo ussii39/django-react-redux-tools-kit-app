@@ -12,7 +12,7 @@
     "module": "esnext" /* モジュールコード生成: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015',または 'ESNext'を指定します。 */,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": true, //importが正しいのにエラーになる場合に,falseにする
     "noEmit": true,
     "jsx": "react-jsx"
   },

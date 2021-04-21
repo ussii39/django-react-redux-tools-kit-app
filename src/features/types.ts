@@ -36,7 +36,7 @@ export interface USER {
 }
 export interface AUTH_STATE {
   isLoginView: boolean;
-  loginUser: LOGIN_USER;
+  loginUser: LOGIN_USER[];
   message: string;
 }
 // /*taskSlice.ts*/

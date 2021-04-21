@@ -13,6 +13,7 @@ import {
   selectResponseErorrMessage,
 } from "./authSlice";
 import axios from "axios";
+import Header from "../../app/Organisms/Header";
 
 const useStyles = makeStyles((theme: Theme) => ({
   button: {
@@ -89,60 +90,63 @@ export const Auth: FC = () => {
   };
 
   return (
-    <div className={styles.auth__root}>
-      <h1>{isLoginView ? "ログイン" : "新規会員登録"}</h1>
-      <br />
-      <div className={classes.message}>{error}</div>
-      {Emailmessage}
-      <TextField
-        InputLabelProps={{
-          shrink: true,
-        }}
-        label="メールアドレス"
-        type="email"
-        name="email"
-        value={email}
-        onChange={handleInputChange}
-      />
-      <br />
-      {Passmessage}
-      <TextField
-        InputLabelProps={{
-          shrink: true,
-        }}
-        label="パスワード"
-        type="password"
-        name="password"
-        onChange={handleInputChange2}
-      />
-      <br />
-      <div>
-        {!isLoginView ? (
-          <TextField
-            InputLabelProps={{
-              shrink: true,
-            }}
-            label="名前"
-            type="text"
-            name="name"
-            onChange={handleInputChange3}
-          />
-        ) : (
-          <div></div>
-        )}
+    <div>
+      <Header></Header>
+      <div className={styles.auth__root}>
+        <h1>{isLoginView ? "ログイン" : "新規会員登録"}</h1>
+        <br />
+        <div className={classes.message}>{error}</div>
+        {Emailmessage}
+        <TextField
+          InputLabelProps={{
+            shrink: true,
+          }}
+          label="メールアドレス"
+          type="email"
+          name="email"
+          value={email}
+          onChange={handleInputChange}
+        />
+        <br />
+        {Passmessage}
+        <TextField
+          InputLabelProps={{
+            shrink: true,
+          }}
+          label="パスワード"
+          type="password"
+          name="password"
+          onChange={handleInputChange2}
+        />
+        <br />
+        <div>
+          {!isLoginView ? (
+            <TextField
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label="名前"
+              type="text"
+              name="name"
+              onChange={handleInputChange3}
+            />
+          ) : (
+            <div></div>
+          )}
+        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className={classes.button}
+          onClick={login}
+        >
+          {isLoginView ? "Login" : "Register"}
+        </Button>
+        <span onClick={() => dispatch(toggleMode())}>
+          {isLoginView ? "Create new account ?" : "Back to Login"}
+        </span>
       </div>
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        className={classes.button}
-        onClick={login}
-      >
-        {isLoginView ? "Login" : "Register"}
-      </Button>
-      <span onClick={() => dispatch(toggleMode())}>
-        {isLoginView ? "Create new account ?" : "Back to Login"}
-      </span>
     </div>
   );
 };

@@ -10,6 +10,9 @@ import { Auth } from "./features/auth/Auth";
 import { Task } from "./features/task/Task";
 import Login from "./features/Login/Login";
 import Loading from "./features/Loading/Loading";
+import Selectlang from "./app/pages/Selectlang";
+import Mypage from "./app/pages/Mypage";
+import AnswerQuestion from "./app/pages/AnswerQuestion";
 
 ReactDOM.render(
   <Provider store={store}>
@@ -17,9 +20,12 @@ ReactDOM.render(
       <div>
         <Route exact path="/" component={Auth} />
         <Route exact path="/tasks" component={App} />
+        <Route exact path="/selectLang" component={Selectlang} />
         <Route exact path="/about" component={Task} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/loading" component={Loading} />
+        <Route exact path="/Mypage" component={Mypage} />
+        <Route exact path="/AnswerQuestion" component={AnswerQuestion} />
       </div>
     </BrowserRouter>
   </Provider>,
