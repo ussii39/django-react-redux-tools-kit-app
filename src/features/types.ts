@@ -4,8 +4,9 @@ export interface LOGIN_USER {
   token: string;
   percent: number;
   AnsweredIds?: string | JSON;
-  point: number;
+  point: string;
   LoginDate?: string | JSON;
+  WeekPoint?: string[] | JSON;
 }
 
 // export interface FILE extends Blob {
@@ -34,9 +35,14 @@ export interface USER {
   id: number;
   username: string;
 }
+export interface Answer {
+  id: number;
+  answer: string;
+}
 export interface AUTH_STATE {
   isLoginView: boolean;
   loginUser: LOGIN_USER[];
+  postanswers: Answer[];
   message: string;
 }
 // /*taskSlice.ts*/

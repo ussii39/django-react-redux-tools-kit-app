@@ -14,6 +14,7 @@ import { LinearProgress, Button } from "@material-ui/core";
 const Loading: FC = () => {
   const [error, Seterror] = useState("");
   const [progress, setProgress] = useState(0);
+  const [press, setpress] = useState(false);
   const loginuser = useSelector(selectLoginUser);
   const dispatch: AppDispatch = useDispatch();
   const history = useHistory();
@@ -21,8 +22,10 @@ const Loading: FC = () => {
   useEffect((): void => {
     const data = localStorage.getItem("token");
     dispatch(fetchAsyncGetMyProf(data));
-    getuserupdated_at();
-  }, []);
+    if (press === true) {
+      getuserupdated_at();
+    }
+  }, [press]);
   const getuserupdated_at = () => {
     setProgress(Math.min(progress + 20, 100));
     axios
@@ -39,13 +42,11 @@ const Loading: FC = () => {
         );
         setProgress(Math.min(progress + 60, 100));
         const todayDate = moment().format("YYYY/MM/DD HH:mm:ss").slice(5, 10);
-        console.log(todayDate);
         const userloginDate = eceptJsonFormat.filter(
           (today: string, index: number) => {
             return today.indexOf(todayDate) == -1;
           }
         );
-        console.log(eceptJsonFormat, "userloginDate");
         const totalUserLoginDate = [...userloginDate, todayDate];
         const sendData = {
           token: localStorage.getItem("token"),
@@ -54,7 +55,6 @@ const Loading: FC = () => {
         axios
           .post(`${process.env.REACT_APP_API_URL}/api/loginStatus`, sendData)
           .then((res) => {
-            console.log(res.data);
             setProgress(Math.min(progress + 100, 100));
             if (eceptJsonFormat.includes(todayDate)) {
               console.log("ログイン報酬ページに遷移しません");
@@ -72,7 +72,7 @@ const Loading: FC = () => {
       });
   };
   return (
-    <div>
+    <div onClick={() => setpress(true)}>
       <div>
         {error ? (
           <div>
@@ -89,12 +89,17 @@ const Loading: FC = () => {
           value={progress}
         />
         {progress}%
-        {progress < 70 ? (
+        {progress > 20 && progress < 70 ? (
           <div>ユーザーのデータを取得しています</div>
         ) : (
           <div></div>
         )}
-        {progress == 100 ? <div>ページに遷移します</div> : <div></div>}
+        {progress == 100 ? <div>画面遷移します</div> : <div></div>}
+        <div className="App">
+          <div className="App-header">
+            <div className="App-logo">press to start</div>
+          </div>
+        </div>
       </div>
     </div>
   );

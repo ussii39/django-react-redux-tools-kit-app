@@ -15,6 +15,7 @@ import img from "../../app/img/taihen.png";
 import { useHistory } from "react-router";
 import { LOGIN_USER } from "../types";
 import Modal from "../Modal/Modal";
+import { fetchasyncPostpoint } from "../Percent/percentSlice";
 
 const Login: FC = () => {
   const [count, setCount] = useState(0);
@@ -25,8 +26,8 @@ const Login: FC = () => {
   const history = useHistory();
 
   useEffect((): void => {
-    const data = localStorage.getItem("token");
-    dispatch(fetchAsyncGetMyProf(data));
+    getUserinfo();
+    postUserPoint();
     getuserupdated_at();
   }, []);
   useEffect(() => {
@@ -40,6 +41,29 @@ const Login: FC = () => {
       setIsOpen(true);
     }
   });
+
+  const getUserinfo = () => {
+    const data = localStorage.getItem("token");
+    const result = dispatch(fetchAsyncGetMyProf(data));
+    return result;
+  };
+
+  const postUserPoint = async () => {
+    const getuserinfo: any = await getUserinfo();
+    const userpoint: string = getuserinfo.payload
+      .map((user: any) => user.point)
+      .join();
+    const userid: string = getuserinfo.payload
+      .map((user: any) => user.id)
+      .join();
+    const pointvalue = parseInt(userpoint, 10);
+    const sendpoint: number = pointvalue + 1 * 50;
+    const userpointobj = { id: userid, point: sendpoint };
+    const responseuserpercent = dispatch(fetchasyncPostpoint(userpointobj));
+    if (fetchasyncPostpoint.fulfilled.match(await responseuserpercent)) {
+      console.log(sendpoint, `${sendpoint}獲得しました`);
+    }
+  };
 
   const getuserupdated_at = () => {
     axios

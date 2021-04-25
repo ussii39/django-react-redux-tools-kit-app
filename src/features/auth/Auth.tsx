@@ -14,8 +14,10 @@ import {
 } from "./authSlice";
 import axios from "axios";
 import Header from "../../app/Organisms/Header";
+import "../../app/css/Auth.css";
 
 const useStyles = makeStyles((theme: Theme) => ({
+  auth__root: {},
   button: {
     margin: "24px",
   },
@@ -92,6 +94,9 @@ export const Auth: FC = () => {
   return (
     <div>
       <Header></Header>
+      <div className="test">
+        <div className="test2"></div>
+      </div>
       <div className={styles.auth__root}>
         <h1>{isLoginView ? "ログイン" : "新規会員登録"}</h1>
         <br />

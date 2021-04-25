@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import { USER, AUTH_STATE, CRED, LOGIN_USER } from "../types";
+import { USER, AUTH_STATE, CRED, LOGIN_USER, Answer } from "../types";
 
 const initialState: AUTH_STATE = {
   isLoginView: true,
@@ -12,8 +12,15 @@ const initialState: AUTH_STATE = {
       token: "",
       percent: 0,
       AnsweredIds: "[[null]]",
-      point: 0,
+      point: "0",
       LoginDate: "[null]",
+      WeekPoint: [],
+    },
+  ],
+  postanswers: [
+    {
+      id: 0,
+      answer: "",
     },
   ],
   message: "",
@@ -75,7 +82,6 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
 export const fetchAsynclogout = createAsyncThunk(
   "auth/logout",
   async (loginuser: any) => {
-    console.log(loginuser, "Aaaa");
     const logoutuser = loginuser.flat();
     const logoutData = logoutuser
       .map((login: LOGIN_USER) => login.token)
@@ -253,6 +259,6 @@ export const selectLoginUser = (state: RootState) => state.auth.loginUser;
 export const selectResponseErorrMessage = (state: RootState) =>
   state.auth.message;
 
-//stpre.tsを参照している
+//store.tsを参照している
 
 export default authSlice.reducer;
