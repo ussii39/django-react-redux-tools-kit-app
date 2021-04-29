@@ -60,7 +60,11 @@ const Header = () => {
               {loginuser.map((login, index) => (
                 <div key={index}>
                   <div>
-                    {login.token == "" ? <div></div> : <div>ログアウト</div>}
+                    {login.token == "" || "ログインしてください" ? (
+                      <div></div>
+                    ) : (
+                      <div>ログアウト</div>
+                    )}
                   </div>
                 </div>
               ))}
