@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import { USER, AUTH_STATE, CRED, LOGIN_USER, Answer } from "../types";
+import { AUTH_STATE, CRED, LOGIN_USER } from "../types";
 
 const initialState: AUTH_STATE = {
   isLoginView: true,
@@ -39,7 +39,6 @@ export const fetchAsyncLogin = createAsyncThunk(
         },
       }
     );
-    console.log(res.data);
     return res.data; //extra reducersの payloadに渡される
   }
 );
@@ -56,7 +55,6 @@ export const fetchAsyncRegister = createAsyncThunk(
         },
       }
     );
-    console.log(res.data);
     return res.data;
   }
 );
@@ -74,7 +72,6 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
         },
       }
     );
-    console.log(res.data);
     return res.data;
   }
 );
@@ -96,77 +93,9 @@ export const fetchAsynclogout = createAsyncThunk(
         },
       }
     );
-    console.log(res.data);
     return res.data;
   }
 );
-
-// export const fetchAsyncGetProfs = createAsyncThunk(
-//   "auth/getProfiles",
-//   async () => {
-//     const res = await axios.get<PROFILE[]>(
-//       `${process.env.REACT_APP_API_URL}/api/profile/`,
-//       {
-//         headers: {
-//           Authorization: `JWT ${localStorage.localJWT}`,
-//         },
-//       }
-//     );
-//     return res.data;
-//   }
-// );
-
-// export const fetchAsyncUpdateProf = createAsyncThunk(
-//   "auth/updateProfile",
-//   async (profile: POST_PROFILE) => {
-//     const uploadData = new FormData();
-//     profile.img && uploadData.append("img", profile.img, profile.img.name);
-//     const res = await axios.put<PROFILE>(
-//       `${process.env.REACT_APP_API_URL}/api/profile/${profile.id}/`,
-//       uploadData,
-//       {
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `JWT ${localStorage.localJWT}`,
-//         },
-//       }
-//     );
-//     return res.data;
-//   }
-// );
-
-//pending fulfilled rejected
-
-// export const authSlice = createSlice({
-//   name: "auth",
-//   initialState,
-//   reducers: {
-//     toggleMode(state) {
-//       state.isLoginView = !state.isLoginView;
-//     },
-//   },
-//     builder.addCase(
-//       fetchAsyncGetProfs.fulfilled,
-//       (state, action: PayloadAction<PROFILE[]>) => {
-//         return {
-//           ...state,
-//           profiles: action.payload,
-//         };
-//       }
-//     );
-//     builder.addCase(
-//       fetchAsyncUpdateProf.fulfilled,
-//       (state, action: PayloadAction<PROFILE>) => {
-//         return {
-//           ...state,
-//           profiles: state.profiles.map((prof) =>
-//             prof.id === action.payload.id ? action.payload : prof
-//           ),
-//         };
-//       }
-//     );
-//   },
-// });
 
 export const authSlice = createSlice({
   name: "auth",
@@ -180,7 +109,6 @@ export const authSlice = createSlice({
     builder.addCase(
       fetchAsyncLogin.fulfilled,
       (state, action: PayloadAction<any>) => {
-        console.log(action.payload);
         if (action.payload.token) {
           localStorage.setItem("token", action.payload.token);
           action.payload.token && (window.location.href = "/loading");
@@ -196,20 +124,10 @@ export const authSlice = createSlice({
         }
       }
     );
-    // builder.addCase(
-    //   fetchAsyncLogin.fulfilled,
-    //   (state, action: PayloadAction<any>) => {
-    //     console.log(action.payload);
-    //     return {
-    //       ...state,
-    //       message: action.payload,
-    //     };
-    //   }
-    // );
+
     builder.addCase(
       fetchAsyncRegister.fulfilled,
       (state, action: PayloadAction<LOGIN_USER>) => {
-        console.log(action.payload);
         localStorage.setItem("token", action.payload.token);
         action.payload.token && (window.location.href = "/loading");
         return {
@@ -240,22 +158,12 @@ export const authSlice = createSlice({
         };
       }
     );
-    // builder.addCase(
-    //   fetchAsyncRegister.rejected,
-    //   (state, action: PayloadAction<any>) => {
-    //     action.payload.token && (window.location.href = "/");
-    //     return {
-    //       ...state,
-    //     };
-    //   }
-    // );
   },
 });
 export const { toggleMode } = authSlice.actions; //通常のreducerだけ
 
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
-// export const selectProfiles = (state: RootState) => state.auth.profiles;
 export const selectResponseErorrMessage = (state: RootState) =>
   state.auth.message;
 

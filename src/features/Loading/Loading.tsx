@@ -1,21 +1,19 @@
-import React, { FC, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
 import moment from "moment";
 import "./Loading.css";
 import { AppDispatch } from "../../app/store";
-import { useSelector, useDispatch } from "react-redux";
-import { selectLoginUser, fetchAsyncGetMyProf } from "../auth/authSlice";
+import { useDispatch } from "react-redux";
+import { fetchAsyncGetMyProf } from "../auth/authSlice";
 import axios from "axios";
 import { useHistory } from "react-router";
 import { LOGIN_USER } from "../types";
 import Error from "../Modal/Error";
-import { LinearProgress, Button } from "@material-ui/core";
+import { LinearProgress } from "@material-ui/core";
 
 const Loading: FC = () => {
   const [error, Seterror] = useState("");
   const [progress, setProgress] = useState(0);
   const [press, setpress] = useState(false);
-  const loginuser = useSelector(selectLoginUser);
   const dispatch: AppDispatch = useDispatch();
   const history = useHistory();
 
@@ -57,11 +55,9 @@ const Loading: FC = () => {
           .then((res) => {
             setProgress(Math.min(progress + 100, 100));
             if (eceptJsonFormat.includes(todayDate)) {
-              console.log("ログイン報酬ページに遷移しません");
               history.push("/selectLang");
             } else {
               history.push("/login");
-              console.log("ログイン報酬ページに遷移します");
             }
           });
       })

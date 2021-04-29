@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import "./Modal.css";
 
 const Modal: FC = () => {

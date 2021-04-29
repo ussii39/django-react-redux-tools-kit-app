@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useCallback, useMemo } from "react";
+import { useState } from "react";
 import { AppDispatch } from "../store";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -10,7 +10,6 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import axios from "axios";
 import Sidebar from "./Sidebar";
 import {
   fetchAsynclogout,

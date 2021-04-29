@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import { FC } from "react";
 import LineExample from "./Line";
 
 const Mypage: FC = () => {

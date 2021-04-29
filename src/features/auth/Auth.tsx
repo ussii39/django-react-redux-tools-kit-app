@@ -12,7 +12,6 @@ import {
   fetchAsyncRegister,
   selectResponseErorrMessage,
 } from "./authSlice";
-import axios from "axios";
 import Header from "../../app/Organisms/Header";
 import "../../app/css/Auth.css";
 
@@ -38,15 +37,11 @@ export const Auth: FC = () => {
   const [Passmessage, SetPassmessage] = useState("");
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api/user`).then((res) => {
-      console.log(res.data);
-      Setemail("");
-    });
+    Setemail("");
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    console.log(value);
     if (value === "") {
       SetEmailmessage("");
     }
@@ -64,7 +59,6 @@ export const Auth: FC = () => {
     Setname(value);
   };
 
-  console.log(email);
   const login = () => {
     if (!email) {
       SetEmailmessage("※メールアドレスを入力してください");
