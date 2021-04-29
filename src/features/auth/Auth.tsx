@@ -37,6 +37,7 @@ export const Auth: FC = () => {
   const [Passmessage, SetPassmessage] = useState("");
 
   useEffect(() => {
+    localStorage.removeItem("token");
     Setemail("");
   }, []);
 
