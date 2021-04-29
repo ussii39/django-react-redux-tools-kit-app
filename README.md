@@ -4,5 +4,6 @@ https://my-1st-enginer.web.app/
 
 ログインのためのメールアドレスは
 testtest@gmail.com
+パスワードは
 password
 で入れます。
