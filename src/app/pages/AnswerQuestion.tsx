@@ -15,6 +15,10 @@ import {
 import moment from "moment";
 import QuestionList from "./QuestionList";
 import useGetCorrectAnswer from "../CustomHooks/useGetCorrectAnswer";
+import { useHistory } from "react-router";
+import { selectLoginUser } from "../../features/auth/authSlice";
+import { useSelector } from "react-redux";
+import JudgeRouter from "../Router/JudgeRouter";
 
 const AnswerQuestion: FC = () => {
   const [LoginUser, SetLoginUser]: any[] = useState([]);
@@ -27,10 +31,14 @@ const AnswerQuestion: FC = () => {
   const [showmessage, Setshowmessage] = useState(false);
   const [Success, SetSuccess] = useState("");
   const { getCorrectAnswer, CorrectAnswer, CorrectId } = useGetCorrectAnswer();
+  const { getUser } = JudgeRouter();
+  const history = useHistory();
+  const loginuser = useSelector(selectLoginUser);
 
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
+    getUser();
     getQuestions();
     getQuestion();
     getUserInfomation();
@@ -40,7 +48,7 @@ const AnswerQuestion: FC = () => {
     postAnswerIdtoSlice();
   }, [ResAnsweredId]);
 
-  const getUserinfo = () => {
+  const getUserinfo = async () => {
     const data = localStorage.getItem("token");
     const result = dispatch(fetchAsyncGetMyProf(data));
     return result;

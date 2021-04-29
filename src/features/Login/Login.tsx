@@ -9,15 +9,18 @@ import img from "../../app/img/taihen.png";
 import { useHistory } from "react-router";
 import Modal from "../Modal/Modal";
 import { fetchasyncPostpoint } from "../Percent/percentSlice";
+import JudgeRouter from "../../app/Router/JudgeRouter";
 
 const Login: FC = () => {
   const [count, setCount] = useState(0);
   const [UserLoginStatus, SetUserLoginStatus] = useState([""]);
   const [IsOpen, setIsOpen] = useState(false);
   const dispatch: AppDispatch = useDispatch();
+  const { getUser } = JudgeRouter();
   const history = useHistory();
 
   useEffect((): void => {
+    getUser();
     getUserinfo();
     postUserPoint();
     getuserupdated_at();

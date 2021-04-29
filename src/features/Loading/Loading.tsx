@@ -9,15 +9,18 @@ import { useHistory } from "react-router";
 import { LOGIN_USER } from "../types";
 import Error from "../Modal/Error";
 import { LinearProgress } from "@material-ui/core";
+import JudgeRouter from "../../app/Router/JudgeRouter";
 
 const Loading: FC = () => {
   const [error, Seterror] = useState("");
   const [progress, setProgress] = useState(0);
   const [press, setpress] = useState(false);
   const dispatch: AppDispatch = useDispatch();
+  const { getUser } = JudgeRouter();
   const history = useHistory();
 
   useEffect((): void => {
+    getUser();
     const data = localStorage.getItem("token");
     dispatch(fetchAsyncGetMyProf(data));
     if (press === true) {

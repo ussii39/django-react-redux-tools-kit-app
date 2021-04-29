@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import axios from "axios";
+import JudgeRouter from "../Router/JudgeRouter";
 
 const LineExample = () => {
   const [WeekFirstPoint, SetFirstWeekPoint] = useState([""]);
@@ -23,6 +24,8 @@ const LineExample = () => {
 
   const [WeekSeventhPoint, SetWeekSeventhPoint] = useState(0);
   const [SeventhWeek, SetSeventhWeek] = useState("");
+
+  const { getUser } = JudgeRouter();
 
   const data = {
     labels: [
@@ -67,6 +70,7 @@ const LineExample = () => {
     ],
   };
   useEffect(() => {
+    getUser();
     filterUser();
   }, []);
 
