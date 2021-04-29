@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import { AUTH_STATE, Answer } from "../types";
+import { AUTH_STATE } from "../types";
 
 const initialState: AUTH_STATE = {
   isLoginView: true,
@@ -41,14 +41,13 @@ export const fetchasyncPostAnswer = createAsyncThunk(
       .filter((last: any, index: number, self: any) => {
         return last !== "";
       });
-    console.log(lastResult, "answer");
-    console.log(i, "i");
+
     axios
       .put(`${process.env.REACT_APP_API_URL}/api/setAnswerId/${sendId}`, {
         AnsweredIds: [lastResult],
       })
       .then((res) => {
-        console.log(res.data);
+        return res.data;
       });
   }
 );
@@ -58,6 +57,15 @@ export const AnswerSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(
+      fetchasyncPostAnswer.pending,
+      (state, action: PayloadAction<any>) => {
+        return {
+          ...state,
+          loginUser: action.payload,
+        };
+      }
+    );
     builder.addCase(
       fetchasyncPostAnswer.fulfilled,
       (state, action: PayloadAction<any>) => {
@@ -71,5 +79,6 @@ export const AnswerSlice = createSlice({
 });
 
 export const postAnswer = (state: RootState) => state.answer.postanswers;
+export const PendingMessage = (state: RootState) => state.answer.message;
 
 export default AnswerSlice.reducer;

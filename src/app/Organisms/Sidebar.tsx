@@ -1,15 +1,9 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/Sidebar.css";
-import { AppDispatch } from "../store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchAsynclogout,
-  selectLoginUser,
-} from "../../features/auth/authSlice";
+import { useSelector } from "react-redux";
+import { selectLoginUser } from "../../features/auth/authSlice";
 
 const Sidebar = (props: any) => {
-  const dispatch: AppDispatch = useDispatch();
   const loginuser = useSelector(selectLoginUser);
   const { onClick, status } = props;
   return (
@@ -18,8 +12,8 @@ const Sidebar = (props: any) => {
         <div key={index}>
           {login.token == "" ? (
             <div className="list">
-              <div className="list-inner">このアプリについて</div>
-              <div className="list-inner">会員登録なしでplayする</div>
+              <div className="list-inner"></div>
+              <div className="list-inner"></div>
               <div className="list-inner"></div>
               <div className="list-inner"></div>
             </div>

@@ -1,39 +1,32 @@
-import React, {
-  FC,
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  createRef,
-} from "react";
-import { AppDispatch } from "../../app/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  selectLoginUser,
-  fetchAsyncGetMyProf,
-} from "../../features/auth/authSlice";
-import { useHistory } from "react-router";
+import React, { FC, useEffect, useState, useCallback } from "react";
+import { AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
+import { fetchAsyncGetMyProf } from "../../features/auth/authSlice";
 import { LOGIN_USER } from "../../features/types";
 import Circle from "react-circle";
 import "../css/AnswerQuestion.css";
 import Header from "../Organisms/Header";
-import { TextField, Button } from "@material-ui/core";
 import axios from "axios";
 import { fetchasyncPostAnswer } from "../../features/Answer/AnswerSlice";
 import {
   fetchasyncPostpercent,
   fetchasyncPostpoint,
 } from "../../features/Percent/percentSlice";
+import moment from "moment";
+import QuestionList from "./QuestionList";
+import useGetCorrectAnswer from "../CustomHooks/useGetCorrectAnswer";
 
 const AnswerQuestion: FC = () => {
-  const loginuser = useSelector(selectLoginUser);
   const [LoginUser, SetLoginUser]: any[] = useState([]);
   const [Question, SetQuestion]: any[] = useState([]);
-  const [InputOneAnswer, SetInputOneAnswers] = useState("");
   const [AnsweredId, SetAnsweredId] = useState([]);
   const [ResAnsweredId, SetResAnsweredId]: any = useState("");
   const [UserPercents, SetUserPercents] = useState(0);
   const [takePercent, SettakePercent] = useState(0);
+  const [Statemessage, SetStateMessage] = useState(false);
+  const [showmessage, Setshowmessage] = useState(false);
+  const [Success, SetSuccess] = useState("");
+  const { getCorrectAnswer, CorrectAnswer, CorrectId } = useGetCorrectAnswer();
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -41,7 +34,6 @@ const AnswerQuestion: FC = () => {
     getQuestions();
     getQuestion();
     getUserInfomation();
-    // getUserAnsweredId();
     curculateUserpercent();
   }, []);
   useEffect(() => {
@@ -163,6 +155,7 @@ const AnswerQuestion: FC = () => {
   };
 
   const postUserPoint = async () => {
+    SetStateMessage(true);
     const getuserinfo: any = await getUserinfo();
     const userpoint: string = getuserinfo.payload
       .map((user: any) => user.point)
@@ -170,52 +163,30 @@ const AnswerQuestion: FC = () => {
     const userid: string = getuserinfo.payload
       .map((user: any) => user.id)
       .join();
+    const LoginDates: string = getuserinfo.payload.map(
+      (user: any) => user.LoginDate
+    );
+    const ii = JSON.parse(LoginDates);
+
+    const ll = ii.filter((a: any) => a !== "null");
+    const points: any = localStorage.getItem("point");
+    const point: any = parseInt(points, 10) + 30;
+    Number(localStorage.setItem("point", point));
     const pointvalue = parseInt(userpoint, 10);
     const sendpoint: number = pointvalue + 1 * 30;
     SettakePercent(sendpoint - pointvalue);
-    const userpointobj = { id: userid, point: sendpoint };
+    const todayDate = moment().format("YYYY/MM/DD HH:mm:ss").slice(5, 10);
+    const userpointobj = {
+      id: userid,
+      point: sendpoint,
+      today: todayDate,
+      LoginDate: ll,
+    };
     const responseuserpercent = dispatch(fetchasyncPostpoint(userpointobj));
     if (fetchasyncPostpoint.fulfilled.match(await responseuserpercent)) {
+      SetStateMessage(false);
       getUserInfomation();
       SettakePercent(0);
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    SetInputOneAnswers(e.target.value);
-  };
-
-  const postAnswer = async (id: number, subjects: string) => {
-    scrollToBottomOfList();
-    const postData = { answer: InputOneAnswer };
-    const resdata = await axios
-      .post<any>(`${process.env.REACT_APP_API_URL}/api/answer`, postData, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((res) => {
-        const ResponseData = res.data;
-        const ResIds = ResponseData.map((a: any) => a.id);
-        if (ResIds == id) {
-          ResIds.forEach((re: any) => {
-            SetResAnsweredId((prev: any[]) =>
-              [re, ...prev].filter((y) => y !== "")
-            );
-          });
-        }
-        return { ResponseData, ResIds };
-      });
-    const { ResponseData, ResIds } = resdata;
-    if (ResIds == id && subjects === "javascript") {
-      postAnswerIdtoSlice();
-      postUserPoint();
-    } else if (ResIds == id && subjects === "python") {
-      postAnswerIdtoSlice();
-      postUserPoint();
-    } else if (ResIds == id && subjects === "typescript") {
-      postAnswerIdtoSlice();
-      postUserPoint();
-    } else {
-      console.log("不正解です");
     }
   };
 
@@ -228,6 +199,52 @@ const AnswerQuestion: FC = () => {
       block: "end",
     });
   };
+  const curculateAnsweredIds = async (ResIds: string) => {
+    const setnumber = parseInt(ResIds, 10);
+    const res = SetResAnsweredId((prev: any[]) => {
+      const resid = [setnumber, ...prev].filter((y) => y !== "");
+      return resid;
+    });
+    return res;
+  };
+
+  const postAnswer = useCallback(
+    async (
+      id: number,
+      subjects: string,
+      InputOneAnswer: string,
+      showmessage: Boolean
+    ) => {
+      SetSuccess("");
+      Setshowmessage(true);
+      scrollToBottomOfList();
+      const postData = { answer: InputOneAnswer };
+      const resdata = await axios
+        .post<any>(`${process.env.REACT_APP_API_URL}/api/answer`, postData, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then(async (res) => {
+          const ResponseData = res.data;
+          const ResIds = ResponseData.map((a: any) => a.id).join();
+          if (ResIds == id) {
+            curculateAnsweredIds(ResIds);
+            SetSuccess("正解です！");
+          }
+          return { ResIds };
+        });
+      const { ResIds } = resdata;
+      if (ResIds == id && subjects === "javascript") {
+        postUserPoint();
+      } else if (ResIds == id && subjects === "python") {
+        postUserPoint();
+      } else if (ResIds == id && subjects === "typescript") {
+        postUserPoint();
+      } else {
+        getCorrectAnswer(id);
+      }
+    },
+    [ref]
+  );
 
   return (
     <>
@@ -236,6 +253,7 @@ const AnswerQuestion: FC = () => {
         <div id="bottom-of-list" ref={ref} />
         {LoginUser.map((login: LOGIN_USER, index: number) => (
           <div key={index}>
+            {/* {Statemessage === false ? <div></div> : <div>読み込み中です</div>} */}
             <div className="circle-area">
               <Circle
                 animate={true} // アニメーションをつけるかどうか
@@ -254,51 +272,25 @@ const AnswerQuestion: FC = () => {
               />
             </div>
             <div className="user-score">{login.point}</div>
-
             {takePercent == 0 ? (
               <div></div>
             ) : (
               <div className="take-user-score">+{takePercent}</div>
             )}
             <div className="question-area">
+              {Success}
               {Question.map((question: any, index: number) => (
-                <div key={index}>
-                  <div className="question-text">{question.question}</div>
-                  {question.subjects === "javascript" ? (
-                    <div className="javascript">{question.subjects}</div>
-                  ) : (
-                    <div></div>
-                  )}
-                  {question.subjects === "python" ? (
-                    <div className="python">{question.subjects}</div>
-                  ) : (
-                    <div></div>
-                  )}
-                  {question.subjects === "typescript" ? (
-                    <div className="typescript">{question.subjects}</div>
-                  ) : (
-                    <div></div>
-                  )}
-                  <div className="level">{question.level}</div>
-                  <TextField
-                    onChange={handleInputChange}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    label="解答欄"
-                    type="text"
-                    name="name"
-                  />
-                  <div className="space"></div>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => postAnswer(question.id, question.subjects)}
-                  >
-                    答えを送信
-                  </Button>
-                </div>
+                <QuestionList
+                  showmessage={showmessage}
+                  CorrectId={CorrectId}
+                  CorrectAnswer={CorrectAnswer}
+                  key={index}
+                  subjects={question.subjects}
+                  question={question.question}
+                  level={question.level}
+                  postAnswer={postAnswer}
+                  id={question.id}
+                ></QuestionList>
               ))}
             </div>
           </div>

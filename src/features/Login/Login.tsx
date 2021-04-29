@@ -1,19 +1,12 @@
-import React, { FC, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
 import moment from "moment";
 import "./Login.css";
 import { AppDispatch } from "../../app/store";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  selectLoginUser,
-  selectIsLoginView,
-  fetchAsyncGetMyProf,
-  fetchAsynclogout,
-} from "../auth/authSlice";
+import { useDispatch } from "react-redux";
+import { fetchAsyncGetMyProf } from "../auth/authSlice";
 import axios from "axios";
 import img from "../../app/img/taihen.png";
 import { useHistory } from "react-router";
-import { LOGIN_USER } from "../types";
 import Modal from "../Modal/Modal";
 import { fetchasyncPostpoint } from "../Percent/percentSlice";
 
@@ -21,7 +14,6 @@ const Login: FC = () => {
   const [count, setCount] = useState(0);
   const [UserLoginStatus, SetUserLoginStatus] = useState([""]);
   const [IsOpen, setIsOpen] = useState(false);
-  const loginuser: any = useSelector(selectLoginUser);
   const dispatch: AppDispatch = useDispatch();
   const history = useHistory();
 
@@ -56,12 +48,25 @@ const Login: FC = () => {
     const userid: string = getuserinfo.payload
       .map((user: any) => user.id)
       .join();
+    const LoginDates: string = getuserinfo.payload.map(
+      (user: any) => user.LoginDate
+    );
+    const ii = JSON.parse(LoginDates);
+
+    const ll = ii.filter((a: any) => a !== "null");
+
     const pointvalue = parseInt(userpoint, 10);
     const sendpoint: number = pointvalue + 1 * 50;
-    const userpointobj = { id: userid, point: sendpoint };
+    Number(localStorage.setItem("point", "50"));
+    const todayDate = moment().format("YYYY/MM/DD HH:mm:ss").slice(5, 10);
+    const userpointobj = {
+      id: userid,
+      point: sendpoint,
+      today: todayDate,
+      LoginDate: ll,
+    };
     const responseuserpercent = dispatch(fetchasyncPostpoint(userpointobj));
     if (fetchasyncPostpoint.fulfilled.match(await responseuserpercent)) {
-      console.log(sendpoint, `${sendpoint}獲得しました`);
     }
   };
 
@@ -73,15 +78,12 @@ const Login: FC = () => {
       .then((res) => {
         const getUserUpdated = res.data;
         const u = [...getUserUpdated];
-        const login = u.map((LU: any) => LU.updated_at).join("");
         const UserLoginState = u.map((LU: any) => LU.LoginDate).join();
         const eceptJsonFormat = JSON.parse(UserLoginState).filter(
           (json: any) => json !== null
         );
         SetUserLoginStatus(eceptJsonFormat);
-        const loginUserupdatetime = login.slice(5, 10).replace("-", "/");
         const todayDate = moment().format("YYYY/MM/DD HH:mm:ss").slice(5, 10);
-        console.log(todayDate);
         const userloginDate = eceptJsonFormat.filter(
           (today: any, index: number) => {
             return today.indexOf(todayDate) == -1;
@@ -94,9 +96,7 @@ const Login: FC = () => {
         };
         axios
           .post(`${process.env.REACT_APP_API_URL}/api/loginStatus`, sendData)
-          .then((res) => {
-            console.log(res.data);
-          });
+          .then((res) => {});
       });
   };
   const leave = () => {

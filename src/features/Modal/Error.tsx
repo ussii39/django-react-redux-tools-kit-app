@@ -1,9 +1,7 @@
-import React, { useState } from "react";
 import "./Error.css";
 import { useHistory } from "react-router";
 
 const Error = () => {
-  const [IsOpen, setIsOpen] = useState(true);
   const history = useHistory();
   const CloseModal = () => {
     localStorage.removeItem("token");
