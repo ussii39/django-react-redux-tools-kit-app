@@ -63,15 +63,23 @@ export const fetchAsyncGetMyProf = createAsyncThunk(
   "auth/loginuser",
   async (token: unknown) => {
     const loginusertoken = { token: token };
-    const res = await axios.post<LOGIN_USER>(
-      `${process.env.REACT_APP_API_URL}/api/users`,
-      loginusertoken,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res: any = await axios
+      .post<LOGIN_USER>(
+        `${process.env.REACT_APP_API_URL}/api/users`,
+        loginusertoken,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        return response;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     return res.data;
   }
 );
@@ -147,6 +155,7 @@ export const authSlice = createSlice({
         };
       }
     );
+
     builder.addCase(
       fetchAsynclogout.fulfilled,
       (state, action: PayloadAction<LOGIN_USER>) => {
