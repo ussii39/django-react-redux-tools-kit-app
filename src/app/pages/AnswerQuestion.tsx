@@ -16,7 +16,10 @@ import moment from "moment";
 import QuestionList from "./QuestionList";
 import useGetCorrectAnswer from "../CustomHooks/useGetCorrectAnswer";
 import { useHistory } from "react-router";
-import { selectLoginUser } from "../../features/auth/authSlice";
+import {
+  selectLoginUser,
+  fetchAsyncGetMyProf2,
+} from "../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 import JudgeRouter from "../Router/JudgeRouter";
 
@@ -30,6 +33,8 @@ const AnswerQuestion: FC = () => {
   const [Statemessage, SetStateMessage] = useState(false);
   const [showmessage, Setshowmessage] = useState(false);
   const [Success, SetSuccess] = useState("");
+  const [test, SetTest] = useState("");
+
   const { getCorrectAnswer, CorrectAnswer, CorrectId } = useGetCorrectAnswer();
   const { getUser } = JudgeRouter();
   const history = useHistory();
@@ -39,10 +44,12 @@ const AnswerQuestion: FC = () => {
 
   useEffect(() => {
     getUser();
-    getQuestions();
-    getQuestion();
-    getUserInfomation();
-    curculateUserpercent();
+    setTimeout(() => {
+      getQuestions();
+      getQuestion();
+      getUserInfomation();
+      curculateUserpercent();
+    }, 500);
   }, []);
   useEffect(() => {
     postAnswerIdtoSlice();
@@ -51,6 +58,7 @@ const AnswerQuestion: FC = () => {
   const getUserinfo = async () => {
     const data = localStorage.getItem("token");
     const result = dispatch(fetchAsyncGetMyProf(data));
+    const result2 = dispatch(fetchAsyncGetMyProf2(data));
     return result;
   };
 
@@ -65,6 +73,7 @@ const AnswerQuestion: FC = () => {
       .join();
     const prevId: any = JSON.parse(prevIds).flat();
     const resultid: any = prevId.filter((prev: any) => prev !== null);
+    console.log(ResAnsweredId, "ResAnsweredId");
     if (ResAnsweredId.length > 0) {
       const obj = { userid: userId, id: ResAnsweredId, resultid };
       const postresult = dispatch(fetchasyncPostAnswer(obj));
@@ -146,9 +155,17 @@ const AnswerQuestion: FC = () => {
         body: JSON.stringify(send),
         headers: headers,
       }
-    ).then((res) => {
-      return res.json();
-    });
+    )
+      .then((res: any) => {
+        return res;
+      })
+      .then((res2: any) => {
+        if (res2.status === 200) {
+          return res2.json();
+        } else {
+        }
+      });
+    console.log(response);
     SetLoginUser(response);
   };
 
@@ -209,11 +226,12 @@ const AnswerQuestion: FC = () => {
   };
   const curculateAnsweredIds = async (ResIds: string) => {
     const setnumber = parseInt(ResIds, 10);
-    const res = SetResAnsweredId((prev: any[]) => {
-      const resid = [setnumber, ...prev].filter((y) => y !== "");
-      return resid;
+    let uuuu: number[] = [];
+    SetResAnsweredId((prev: any[]) => {
+      uuuu = [setnumber, ...prev].filter((y) => y !== "");
+      return uuuu;
     });
-    return res;
+    return uuuu;
   };
 
   const postAnswer = useCallback(
@@ -234,13 +252,15 @@ const AnswerQuestion: FC = () => {
         .then(async (res) => {
           const ResponseData = res.data;
           const ResIds = ResponseData.map((a: any) => a.id).join();
+          let emptyArray: number[] = [];
           if (ResIds == id) {
-            curculateAnsweredIds(ResIds);
+            emptyArray = await curculateAnsweredIds(ResIds);
             SetSuccess("正解です！");
           }
-          return { ResIds };
+          console.log(emptyArray, "emptyArray");
+          return { ResIds, emptyArray };
         });
-      const { ResIds } = resdata;
+      const { ResIds, emptyArray } = resdata;
       if (ResIds == id && subjects === "javascript") {
         postUserPoint();
       } else if (ResIds == id && subjects === "python") {

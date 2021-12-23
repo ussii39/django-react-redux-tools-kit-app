@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppDispatch } from "../store";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   const [Status, SetStatus] = useState(false);
+  const [loginStatus, SetloginStatus] = useState("");
   const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
   const loginuser = useSelector(selectLoginUser);
@@ -37,6 +38,10 @@ const Header = () => {
   const toggleMenu = (status: any) => {
     SetStatus(status);
   };
+
+  useEffect(() => {
+    console.log(loginuser);
+  }, []);
 
   return (
     <>
@@ -59,13 +64,15 @@ const Header = () => {
             >
               {loginuser.map((login, index) => (
                 <div key={index}>
-                  <div>
-                    {login.token == "" || "ログインしてください" ? (
-                      <div></div>
-                    ) : (
-                      <div>ログアウト</div>
-                    )}
-                  </div>
+                  <>
+                    <div>
+                      {login.name === "" || login.token === "" ? (
+                        <div></div>
+                      ) : (
+                        <div>ログアウト</div>
+                      )}
+                    </div>
+                  </>
                 </div>
               ))}
             </Button>

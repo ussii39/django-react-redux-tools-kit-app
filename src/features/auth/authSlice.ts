@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
+import { RootState, AppThunk } from "../../app/store";
 import axios from "axios";
 import { AUTH_STATE, CRED, LOGIN_USER } from "../types";
 
@@ -112,6 +112,9 @@ export const authSlice = createSlice({
     toggleMode(state) {
       state.isLoginView = !state.isLoginView;
     },
+    incrementByAmount: (state, action: PayloadAction<any>) => {
+      state.message = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -169,13 +172,23 @@ export const authSlice = createSlice({
     );
   },
 });
-export const { toggleMode } = authSlice.actions; //通常のreducerだけ
+export const { toggleMode, incrementByAmount } = authSlice.actions; //通常のreducerだけ
 
 export const selectIsLoginView = (state: RootState) => state.auth.isLoginView;
 export const selectLoginUser = (state: RootState) => state.auth.loginUser;
 export const selectResponseErorrMessage = (state: RootState) =>
   state.auth.message;
 
+export const fetchAsyncGetMyProf2 = (data: any): AppThunk => (
+  dispatch,
+  getState
+) => {
+  const test = selectLoginUser(getState());
+  if (test) {
+    console.log(test, "実行されました");
+    dispatch(incrementByAmount(data));
+  }
+};
 //store.tsを参照している
 
 export default authSlice.reducer;

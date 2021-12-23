@@ -51,6 +51,7 @@ export const Auth: FC = () => {
     }
     Setemail(value);
   };
+
   const handleInputChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     Setpassword(value);
